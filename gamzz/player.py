@@ -36,7 +36,6 @@ class Player:
         if self.on_ground:
             self.velocity_y = self.jump_strength
             self.on_ground = False
-            self.state = "jump"
 
     # ---------------- UPDATE ----------------
     def update(self):
@@ -71,3 +70,9 @@ class Player:
 
         # DRAW
         screen.blit(rotated_icon, icon_rect.topleft)
+    def reset(self):
+        self.rect.x = 100
+        self.rect.bottom = self.ground_y + 40
+        self.velocity_y = 0
+        self.on_ground = True
+        self.angle = 0

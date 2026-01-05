@@ -15,18 +15,20 @@ class Obstacle:
 class SmallSpike:
     def __init__(self, x, ground_y, size=25):
         self.rect = pygame.Rect(x, ground_y - size, size, size)
-        self.color = (255, 50, 50)
+        self.image = pygame.image.load(
+            "assets/img/spike.png"
+        ).convert_alpha()
+
+        # Scale image to match size
+        self.image = pygame.transform.scale(
+            self.image, (size, size)
+        )
 
     def update(self, speed):
         self.rect.x -= speed
 
     def draw(self, screen):
-        points = [
-            (self.rect.left, self.rect.bottom),
-            (self.rect.centerx, self.rect.top),
-            (self.rect.right, self.rect.bottom),
-        ]
-        pygame.draw.polygon(screen, self.color, points)
+        screen.blit(self.image, self.rect)
 
 class TriangleObstacle:
     def __init__(self, x, ground_y, size=50):
@@ -38,20 +40,21 @@ class TriangleObstacle:
             size,
             size
         )
-        self.color = (255, 50, 50)
+        self.image = pygame.image.load(
+            "assets/img/spike.png"
+        ).convert_alpha()
+
+        # Scale image to match size
+        self.image = pygame.transform.scale(
+            self.image, (size, size)
+        )
 
     def update(self, speed):
         self.rect.x -= speed
 
     def draw(self, screen):
-        # Triangle points
-        points = [
-            (self.rect.left, self.rect.bottom),        # bottom-left
-            (self.rect.centerx, self.rect.top),         # top
-            (self.rect.right, self.rect.bottom)         # bottom-right
-        ]
-
-        pygame.draw.polygon(screen, self.color, points)
+        
+        screen.blit(self.image, self.rect)
 
 
 
@@ -107,3 +110,43 @@ class Liquid:
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
+
+class JumperPad:
+    def __init__(self, x, ground_y, width=50, height=20, boost=-20):
+        self.rect = pygame.Rect(
+            x,
+            ground_y - height,
+            width,
+            height
+        )
+        self.jump_force = -18   # 🔥 stronger than normal jump
+        self.used = False       # prevents double trigger
+
+    def update(self, speed):
+        self.rect.x -= speed
+
+    def draw(self, screen):
+        # base
+        pygame.draw.rect(screen, (255, 160, 80), self.rect, border_radius=4)
+
+        # top glow
+        glow_rect = pygame.Rect(
+            self.rect.x,
+            self.rect.y,
+            self.rect.width,
+            4
+        )
+        pygame.draw.rect(screen, (255, 220, 150), glow_rect)
+
+        # arrow / symbol
+        cx = self.rect.centerx
+        cy = self.rect.centery
+        pygame.draw.polygon(
+            screen,
+            (255, 90, 90),
+            [
+                (cx - 6, cy + 3),
+                (cx + 6, cy + 3),
+                (cx, cy - 6)
+            ]
+        )
