@@ -474,7 +474,7 @@ def spawn_pillar_liquid_section1(x, ground_y):
     height_step = 20
 
     gap_width = 90       
-    liquid_width = 60    
+    liquid_width = 90    
     liquid_offset = (gap_width - liquid_width) // 2
     liquid_raise = 35
     liquid_height = 25
@@ -1005,4 +1005,5 @@ while True:
 
     pygame.display.flip()
     clock.tick(60)
+
     
