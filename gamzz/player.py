@@ -1,6 +1,4 @@
-
 import pygame
-
 class Player:
     def __init__(self, x, ground_y):
         # -------- ROTATION --------
@@ -24,7 +22,7 @@ class Player:
 
         # -------- PLAYER ICON --------
         self.icon = pygame.image.load(
-            "assets/img/icon_2.png"
+            "assets/img/icon2.png"
         ).convert_alpha()
         self.icon = pygame.transform.scale(
             self.icon, (self.size, self.size)
@@ -76,3 +74,5 @@ class Player:
         self.velocity_y = 0
         self.on_ground = True
         self.angle = 0
+    def set_icon(self, image):
+        self.image = image

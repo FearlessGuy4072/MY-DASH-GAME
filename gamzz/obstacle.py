@@ -15,6 +15,7 @@ class Obstacle:
 class SmallSpike:
     def __init__(self, x, ground_y, size=25):
         self.rect = pygame.Rect(x, ground_y - size, size, size)
+        self.hitbox = self.rect.inflate(-10, -10)
         self.image = pygame.image.load(
             "assets/img/spike.png"
         ).convert_alpha()
@@ -26,6 +27,7 @@ class SmallSpike:
 
     def update(self, speed):
         self.rect.x -= speed
+        self.hitbox.center = self.rect.center
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -40,6 +42,7 @@ class TriangleObstacle:
             size,
             size
         )
+        self.hitbox = self.rect.inflate(-10, -10)
         self.image = pygame.image.load(
             "assets/img/spike.png"
         ).convert_alpha()
@@ -51,6 +54,7 @@ class TriangleObstacle:
 
     def update(self, speed):
         self.rect.x -= speed
+        self.hitbox.center = self.rect.center
 
     def draw(self, screen):
         
@@ -73,43 +77,54 @@ class StairPlatform:
 
 class Pillar:
     def __init__(self, x, y, width=50, height=80):
+        # Collision rect
         self.rect = pygame.Rect(x, y - height, width, height)
-        self.color = (180, 0, 255)
-        self.glow_color = (220, 120, 255)
+        self.hitbox = self.rect.inflate(-12, -6)
+
+
+        # Load pillar image
+        self.image = pygame.image.load(
+            "assets/img/pillar.png"
+        ).convert_alpha()
+
+        # Scale image to match rect
+        self.image = pygame.transform.smoothscale(
+            self.image,
+            (width, height)
+        )
 
     def update(self, speed):
         self.rect.x -= speed
 
     def draw(self, screen):
-        # glow
-        glow = pygame.Surface(
-            (self.rect.width + 10, self.rect.height + 10),
-            pygame.SRCALPHA
-        )
-        glow.fill((*self.glow_color, 80))
-        screen.blit(
-            glow,
-            (self.rect.x - 5, self.rect.y - 5)
-        )
+        screen.blit(self.image, self.rect)
 
-        # pillar
-        pygame.draw.rect(screen, self.color, self.rect)
 
 class Liquid:
     def __init__(self, x, y, width, height=30):
         self.base_y = y
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = (0, 200, 255)
+        self.hitbox = self.rect.inflate(-10, -10)
+        self.image = pygame.image.load(
+            "assets/img/liquid.png"
+        ).convert_alpha()
+
+        # Scale image to match size
+        self.image = pygame.transform.scale(
+            self.image, (width, height)
+        )
+
         self.time = 0
 
     def update(self, speed):
         self.rect.x -= speed
+        self.hitbox.center = self.rect.center
         self.time += 0.1
         wave = math.sin(self.time) * 3
         self.rect.y = self.base_y + wave
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.image, self.rect)
 
 class JumperPad:
     def __init__(self, x, ground_y, width=50, height=20, boost=-20):
@@ -120,10 +135,19 @@ class JumperPad:
             height
         )
         self.jump_force = -18   # 🔥 stronger than normal jump
-        self.used = False       # prevents double trigger
+        self.used = False
+        
+        # ---- Arrow animation ----
+        self.arrow_offset = 0
+        self.arrow_dir = 1
+        self.arrow_speed = 0.4       # prevents double trigger
 
     def update(self, speed):
         self.rect.x -= speed
+
+        self.arrow_offset += self.arrow_dir * self.arrow_speed
+        if abs(self.arrow_offset) > 6:
+            self.arrow_dir *= -1
 
     def draw(self, screen):
         # base
@@ -140,13 +164,30 @@ class JumperPad:
 
         # arrow / symbol
         cx = self.rect.centerx
-        cy = self.rect.centery
-        pygame.draw.polygon(
-            screen,
-            (255, 90, 90),
-            [
-                (cx - 6, cy + 3),
-                (cx + 6, cy + 3),
-                (cx, cy - 6)
-            ]
+        base_y = self.rect.top - 10 + self.arrow_offset
+
+        arrow_points = [
+        (cx, base_y - 12),        # tip
+        (cx - 8, base_y),         # left
+        (cx + 8, base_y)          # right
+                        ]
+
+        pygame.draw.polygon(screen, (255, 255, 255), arrow_points)
+class Flag:
+    def __init__(self, x, ground_y):
+        self.image = pygame.image.load(
+            "assets/img/flag.png"
+        ).convert_alpha()
+
+        self.image = pygame.transform.smoothscale(self.image, (60, 90))
+
+        self.rect = self.image.get_rect(
+            bottomleft=(x, ground_y + 40)
         )
+
+    def update(self, speed):
+        self.rect.x -= speed
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+
