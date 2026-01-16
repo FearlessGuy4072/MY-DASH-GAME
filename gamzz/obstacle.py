@@ -20,7 +20,6 @@ class SmallSpike:
             "assets/img/spike.png"
         ).convert_alpha()
 
-        # Scale image to match size
         self.image = pygame.transform.scale(
             self.image, (size, size)
         )
@@ -35,7 +34,7 @@ class SmallSpike:
 class TriangleObstacle:
     def __init__(self, x, ground_y, size=50):
         self.size = size
-        # Collision box (rectangle)
+        
         self.rect = pygame.Rect(
             x,
             ground_y - size,
@@ -46,8 +45,7 @@ class TriangleObstacle:
         self.image = pygame.image.load(
             "assets/img/spike.png"
         ).convert_alpha()
-
-        # Scale image to match size
+        
         self.image = pygame.transform.scale(
             self.image, (size, size)
         )
@@ -77,17 +75,14 @@ class StairPlatform:
 
 class Pillar:
     def __init__(self, x, y, width=50, height=80):
-        # Collision rect
+        
         self.rect = pygame.Rect(x, y - height, width, height)
         self.hitbox = self.rect.inflate(-12, -6)
-
-
-        # Load pillar image
+        
         self.image = pygame.image.load(
             "assets/img/pillar.png"
         ).convert_alpha()
-
-        # Scale image to match rect
+        
         self.image = pygame.transform.smoothscale(
             self.image,
             (width, height)
@@ -109,7 +104,6 @@ class Liquid:
             "assets/img/liquid.png"
         ).convert_alpha()
 
-        # Scale image to match size
         self.image = pygame.transform.scale(
             self.image, (width, height)
         )
@@ -134,13 +128,12 @@ class JumperPad:
             width,
             height
         )
-        self.jump_force = -18   # 🔥 stronger than normal jump
+        self.jump_force = -18  
         self.used = False
-        
-        # ---- Arrow animation ----
+    
         self.arrow_offset = 0
         self.arrow_dir = 1
-        self.arrow_speed = 0.4       # prevents double trigger
+        self.arrow_speed = 0.4     
 
     def update(self, speed):
         self.rect.x -= speed
@@ -152,8 +145,6 @@ class JumperPad:
     def draw(self, screen):
         # base
         pygame.draw.rect(screen, (255, 160, 80), self.rect, border_radius=4)
-
-        # top glow
         glow_rect = pygame.Rect(
             self.rect.x,
             self.rect.y,
@@ -162,14 +153,13 @@ class JumperPad:
         )
         pygame.draw.rect(screen, (255, 220, 150), glow_rect)
 
-        # arrow / symbol
         cx = self.rect.centerx
         base_y = self.rect.top - 10 + self.arrow_offset
 
         arrow_points = [
-        (cx, base_y - 12),        # tip
-        (cx - 8, base_y),         # left
-        (cx + 8, base_y)          # right
+        (cx, base_y - 12),       
+        (cx - 8, base_y),         
+        (cx + 8, base_y)          
                         ]
 
         pygame.draw.polygon(screen, (255, 255, 255), arrow_points)
@@ -190,4 +180,5 @@ class Flag:
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+
 
