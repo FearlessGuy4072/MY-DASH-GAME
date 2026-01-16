@@ -10,10 +10,10 @@ pygame.init()
 pygame.mixer.init()
 
 pygame.mixer.music.load("assets/sound/bgsound1.mp3")
-pygame.mixer.music.set_volume(0.3)  # 0.0 → 1.0
+pygame.mixer.music.set_volume(0.3)
 
 
-# ---------------- WINDOW ----------------
+# WINDOW 
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 temp_surface = pygame.Surface((WIDTH, HEIGHT))
@@ -24,26 +24,19 @@ clock = pygame.time.Clock()
 from player import Player 
 from obstacle import JumperPad, TriangleObstacle , SmallSpike, Pillar, Liquid , Flag
 
-
-# ---------------- COLORS ----------------
 WHITE = (255, 255, 255)
 BLUE = (0, 150, 255)
 BLACK = (0, 0, 0)
-
-# ---------------- FONT ----------------
 font = pygame.font.SysFont(None, 48)
 
-# ---------------- GAME STATE ----------------
 state = "menu"
 
-
-# ---------------- BUTTON ----------------
 button_rect = pygame.Rect(0, 0, 250, 80)
 button_rect.center = (WIDTH // 2, 380)
 
 label = font.render("Select Player", True, (180, 180, 200))
 
-# ---------------- GROUND ----------------
+#ground
 ground_y = 450
 obstacle_speed = 6
 GAME_SPEED = 6
@@ -52,9 +45,7 @@ GAME_START_DELAY = 0_000   # 15 seconds in milliseconds
 attempts = 1
 WORLD_SPEED = GAME_SPEED
 
-
-
-# ---------------- PLAYER ----------------
+# PLAYER
 player = Player(100, ground_y)
 
 def scale_to_width(img, width):
@@ -67,7 +58,7 @@ bg_front = pygame.image.load("assets/img/pbg3.png").convert_alpha()
 
 bg_back = scale_to_width(bg_back, WIDTH)
 bg_front = scale_to_width(bg_front, WIDTH)
-# -------- PARALLAX IMAGES -------- = pygame.image.load("assets/img/pbg1.png").convert()
+# PARALLAX IMAGES
 pbg2 = pygame.image.load("assets/img/pbg2.png").convert_alpha()
 pbg3 = pygame.image.load("assets/img/pbg3.png").convert_alpha()
 
@@ -78,24 +69,21 @@ title_img = pygame.image.load("assets/img/title.png").convert_alpha()
 # Optional: scale it to fit nicely
 title_img = pygame.transform.smoothscale(title_img, (420, 90))
 
-# X positions
 back_x1 = 0
 back_x2 = bg_back.get_width()
 
 front_x1 = 0
 front_x2 = bg_front.get_width()
-
-# Y positions
 bg_back_y = 40
-bg_front_y = ground_y + 40  # aligns with gameplay floor
+bg_front_y = ground_y + 40  
 
 
-back_speed = 2        # slow sky/building
+back_speed = 2        
 front_speed = GAME_SPEED
 
-# -------- PARALLAX POSITIONS --------
+#PARALLAX POSITIONS
 text_x = WIDTH + 50
-text_y = bg_front_y - 170   # above ground / building
+text_y = bg_front_y - 170  
 text_active = False
 
 mid_x1 = 0
@@ -104,29 +92,27 @@ mid_x2 = pbg2.get_width()
 near_x1 = 0
 near_x2 = pbg3.get_width()
 
-# -------- SPEED & ZOOM TRANSITION --------
+#SPEED & ZOOM TRANSITION
 BASE_SPEED = 6
 FAST_SPEED = 7
 obstacle_speed = BASE_SPEED
 
-speed_boost_time = 16_000  # ms (16 sec)
-speed_transition_duration = 1000  # 1 sec
-SPEED_BOOST_DURATION = 3000  # ms
+speed_boost_time = 16_000 
+speed_transition_duration = 1000  
+SPEED_BOOST_DURATION = 3000 
 speed_boost_end_time = 0
 
 zoom = 1.0
 zoom_target = 1.08
 zoom_speed = 0.12
 zoom_timer = pygame.time.get_ticks()
-ZOOM_DURATION = 400 # milliseconds
+ZOOM_DURATION = 400 
 zoom_triggered = False
 
 speed_boost_started = False
 icon_y = 240
 icon_left_btn  = pygame.Rect(WIDTH//2 - 120, icon_y - 20, 40, 40)
 icon_right_btn = pygame.Rect(WIDTH//2 + 80,  icon_y - 20, 40, 40)
-
-
 
 player_icons = [
     pygame.image.load("assets/img/icon1.png").convert_alpha(),
@@ -141,7 +127,6 @@ player_icons = [
 
 start_img = pygame.image.load("assets/img/start.png").convert_alpha()
 
-# scale if needed
 start_img = pygame.transform.smoothscale(start_img, (220, 70))
 start_rect = start_img.get_rect(center=(WIDTH // 2, 380))
 
@@ -166,7 +151,7 @@ menu_btn    = pygame.Rect(300, 270, 200, 50)
 vol_up_btn  = pygame.Rect(300, 340, 95, 50)
 vol_dn_btn  = pygame.Rect(405, 340, 95, 50)
 
-# ---------------- BACKGROUND ----------------
+#BACKGROUND 
 you_died_img = pygame.image.load("assets/img/you_died.png").convert_alpha()
 retry_img    = pygame.image.load("assets/img/retry.png").convert_alpha()
 menu_img     = pygame.image.load("assets/img/menu.png").convert_alpha()
@@ -194,9 +179,7 @@ attempt_img = pygame.image.load(
     "assets/img/attempt_bar.png"
 ).convert_alpha()
 
-BAR_HEIGHT = 60   # choose what looks good
-
-
+BAR_HEIGHT = 60 
 
 scale = 0.35
 w, h = attempt_img.get_size()
@@ -214,12 +197,12 @@ def draw_attempts(screen, attempts, x, y):
 def draw_menu(screen):
     screen.fill((20, 20, 30))
 
-    # ----- GAME TITLE -----
+    # GAME TITLE
     title_font = pygame.font.SysFont(None, 72)
     title = title_font.render("MY DASH GAME", True, (255, 255, 255))
     screen.blit(title, title.get_rect(center=(WIDTH // 2, 120)))
 
-    # ----- DROPDOWN BUTTON -----
+    #DROPDOWN BUTTON
     pygame.draw.rect(screen, (60, 60, 80), dropdown_btn, border_radius=8)
     screen.blit(
         player_icons[selected_icon_index],
@@ -229,26 +212,23 @@ def draw_menu(screen):
     arrow = font.render("▼", True, (255, 255, 255))
     screen.blit(arrow, (dropdown_btn.right - 30, dropdown_btn.y + 8))
 
-    # ----- DROPDOWN OPTIONS -----
+    #DROPDOWN OPTIONS
     if dropdown_open:
         for i, rect in enumerate(dropdown_items):
             pygame.draw.rect(screen, (80, 80, 110), rect, border_radius=6)
             screen.blit(player_icons[i], (rect.x + 10, rect.y + 3))
 
-    # ----- START BUTTON -----
+    #START BUTTON
     pygame.draw.rect(screen, (0, 170, 90), start_btn, border_radius=10)
     start_text = font.render("START", True, (0, 0, 0))
     screen.blit(start_text, start_text.get_rect(center=start_btn.center))
 
 
 def draw_ui(screen, font, attempts):
-    # ATTEMPT label
     label_x = 20
     label_y = 6
 
     screen.blit(attempt_img, (label_x, label_y))
-
-    # Draw attempt number digit-by-digit
     digits = str(attempts)
     x = label_x + attempt_img.get_width() + 8
     y = label_y + attempt_img.get_height() // 2
@@ -267,18 +247,14 @@ def draw_retry_panel(screen):
         panel_w,
         panel_h
     )
-
-    # Panel background
     pygame.draw.rect(screen, (20, 20, 30), panel_rect, border_radius=14)
     pygame.draw.rect(screen, (255, 255, 255), panel_rect, 2, border_radius=14)
 
-    # ---- YOU DIED IMAGE ----
     title_rect = you_died_img.get_rect(
         center=(panel_rect.centerx, panel_rect.y + 40)
     )
     screen.blit(you_died_img, title_rect)
 
-    # ---- BUTTONS ----
     retry_btn = retry_img.get_rect(
         center=(panel_rect.x + panel_w * 0.3, panel_rect.y + 140)
     )
@@ -316,14 +292,8 @@ def draw_retry_panel(screen):
 
 def kill_player():
     global  state, attempts 
-
-    
-    
-
     attempts += 1
     state = "retry"
-
-    # stop player motion
     player.velocity_y = 0
 
 def draw_win_screen(screen, font):
@@ -390,8 +360,8 @@ def reset_game():
     text_active = False
     text_x = WIDTH + 100
 
-    spawn_locked = False              # ✅ RESET
-    jumper_pattern_spawned = False    # ✅ RESET
+    spawn_locked = False             
+    jumper_pattern_spawned = False    
 
 # ---------------- OBSTACLES ----------------
 def spawn_triple_small_spikes(x, ground_y):
@@ -400,7 +370,7 @@ def spawn_triple_small_spikes(x, ground_y):
     for i in range(3):
         spike = SmallSpike(
             x + i * spacing,
-            ground_y + 40,   # SAME ground reference as pillars
+            ground_y + 40,   
             size=25
         )
         obstacles.append(spike)
@@ -416,7 +386,7 @@ flag_spawned = False
 obstacles = []
 
 pattern_index = 0
-PATTERN_TIME = 10_000  # 10 seconds
+PATTERN_TIME = 10_000 
 fixed_patterns = [
     "big",
     "small3",
@@ -494,8 +464,6 @@ def spawn_pillar_liquid_section1(x, ground_y):
                 pillar_height
             )
         )
-
-        # ---- LIQUID (centered in gap) ----
         if i < count - 1:
          obstacles.append(
             Liquid(
@@ -589,17 +557,13 @@ def spawn_jumper_pillar_pattern(start_x, ground_y):
     spacing = 120
     LIQUID_HEIGHT = 30
     x = start_x
-
-    # 1️⃣ Jumper Pad
     obstacles.append(JumperPad(x+60, ground_y+20))
     x += spacing + 80
-
-    # 2️⃣ Large Pillar
+    
     big_pillar = Pillar(x, ground_y+40, height=160, width=120)
     obstacles.append(big_pillar)
     x += big_pillar.rect.width + 30
 
-    # 3️⃣ Liquid gap
     obstacles.append(
         Liquid(
             x-30,
@@ -610,16 +574,12 @@ def spawn_jumper_pillar_pattern(start_x, ground_y):
     )
     x += 60 + spacing
 
-    # 4️⃣ Small Pillar
     small_pillar = Pillar(x-20, ground_y+40, height=100, width=140)
     obstacles.append(small_pillar)
     x += small_pillar.rect.width + 30
 
-    # 5️⃣ Jumper Pad
     obstacles.append(JumperPad(x+50, ground_y-10))
        
-
-    # 6️⃣ Liquid gap
     obstacles.append(
         Liquid(
             x-50,
@@ -630,17 +590,14 @@ def spawn_jumper_pillar_pattern(start_x, ground_y):
     )
     x +=  spacing+60
 
-    # 7️⃣ Medium Pillar
     obstacles.append(Pillar(x-10, ground_y+40, height=140, width=100))
-
-
 
 OBSTACLE_EVENT = pygame.USEREVENT + 1
 pygame.time.set_timer(OBSTACLE_EVENT, 1400)
 
-# ===================== GAME LOOP =====================
+#  GAME LOOP 
 while True:
-    # -------- EVENTS --------
+    #  EVENTS 
     for event in pygame.event.get():
           
         if event.type == pygame.QUIT:
@@ -714,7 +671,7 @@ while True:
                     spawn_pillar_liquid_section(WIDTH , ground_y)
                     spawn_locked = False
                     spawn_pillar_spike_pattern(WIDTH + 350, ground_y)       
-    # AFTER 20s → (optional later)
+    
             if elapsed_time >= 16_500 and not speed_boost_started:
                 obstacle_speed += 2
                 speed_boost_started = True
@@ -746,7 +703,7 @@ while True:
                 pass
                 
 
-    # -------- UPDATE --------
+    #  UPDATE 
     if state == "win":
         continue
 
@@ -760,19 +717,16 @@ while True:
                 speed_start_time = pygame.time.get_ticks()
                 speed_boost_end_time = speed_start_time + SPEED_BOOST_DURATION
 
-    # 🔹 Trigger zoom ONLY ONCE
             if not zoom_triggered:
                 zoom_target = 1.00
                 zoom_timer = pygame.time.get_ticks()
                 zoom_triggered = True
 
-    # ---- TEXT APPEAR WINDOW (25–30 sec) ----
         if 25_000 <= elapsed_time <= 30_000:
             if not text_active:
                 text_active = True
                 text_x = WIDTH + 100  # start from right
 
-    # ---- Smooth speed increase ----
         if speed_boost_started:
             t = min(
             (pygame.time.get_ticks() - level_start_time) / speed_transition_duration,
@@ -780,28 +734,20 @@ while True:
         )
             obstacle_speed = BASE_SPEED + (FAST_SPEED - BASE_SPEED) * t
 
-        # ---- Auto reset speed ----
             if pygame.time.get_ticks() > speed_boost_end_time:
                 obstacle_speed = BASE_SPEED
                 speed_boost_started = False
-  # ---- SMOOTH ZOOM ----
+  #  SMOOTH ZOOM 
         zoom += (zoom_target - zoom) * zoom_speed
 
-# Auto reset zoom after duration
         if zoom_target > 1.0:
             if pygame.time.get_ticks() - zoom_timer > ZOOM_DURATION:
                 zoom_target = 1.0
                 zoom_triggered = False
 
-
-# Snap back cleanly (IMPORTANT)
         if zoom_target == 1.0 and abs(zoom - 1.0) < 0.002:
             zoom = 1.0
 
-
-            
-
-        # ---- MOVE BACKGROUND ----
         back_x1 -= back_speed
         back_x2 -= back_speed
 
@@ -812,7 +758,6 @@ while True:
         if back_x2 <= -bw:
             back_x2 = back_x1 + bw
 
-# ---- MOVE FOREGROUND ----
         front_x1 -= front_speed
         front_x2 -= front_speed
 
@@ -823,7 +768,7 @@ while True:
         if front_x2 <= -fw:
             front_x2 = front_x1+fw
         if text_active:
-            text_x -= front_speed   # SAME speed as building
+            text_x -= front_speed   
 
         player.update()
         player_on_pillar = False
@@ -842,19 +787,18 @@ while True:
             if obs.rect.right < 0:
                 obstacles.remove(obs)
                 continue
-    # ================= JUMPER PAD =================
+
             if isinstance(obs, JumperPad):
                 if player.rect.colliderect(obs.rect):
                     if player.velocity_y >= 0 and player.rect.bottom <= obs.rect.centery:
                         player.velocity_y = obs.jump_force
                         player.on_ground = False
-                continue  # ✅ continue ONLY for jumper
-    # ================= PILLAR (LANDING) =================
+                continue  
             
             if isinstance(obs, Pillar):
                 if player.rect.colliderect(obs.rect):
 
-        # ✅ TOP LANDING (only when falling)
+    
                     if (
             player.velocity_y >= 0 and
             player.rect.bottom <= obs.rect.top + 15
@@ -865,21 +809,13 @@ while True:
                         player.state = "run"
                         continue
 
-        # ❌ SIDE OR BOTTOM HIT
                     kill_player()
                     break
 
-
-            
-
-    # ================= REAL HAZARDS =================
             if isinstance(obs, (TriangleObstacle, SmallSpike, Liquid)):
                 if player.rect.colliderect(obs.hitbox):
                     kill_player()
                     break
-
-        
-    # -------- DRAW --------
     world_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
 
 
@@ -887,14 +823,10 @@ while True:
         screen.fill((16, 15, 30))
 
         
-
-# ---- TITLE IMAGE ----
         title_rect = title_img.get_rect(center=(WIDTH // 2, 100))
         screen.blit(title_img, title_rect)
 
         
-
-        # ---- ICON SELECTOR ----
         icon = player_icons[selected_icon_index]
         screen.blit(icon, icon.get_rect(center=(WIDTH//2, icon_y)))
         # screen.blit(label, label.get_rect(center=(WIDTH//2, icon_y + 40)))
@@ -905,22 +837,19 @@ while True:
         screen.blit(font.render("<", True, WHITE), icon_left_btn.move(12, 4))
         screen.blit(font.render(">", True, WHITE), icon_right_btn.move(14, 4))
 
-        # ---- START BUTTON ----
         pygame.draw.rect(screen, (0, 180, 255), button_rect, border_radius=10)
-        # ---- START IMAGE BUTTON ----
+        
         screen.blit(start_img, start_rect)
 
 
 
 
     elif state == "game":
-
-    # -------------------------
+        
     # CLEAR WORLD EACH FRAME
-    # -------------------------
         world_surface.fill((36, 41, 92))  # sky color
         
-    # ---- BACKGROUND ----
+    # BACKGROUND 
         world_surface.blit(bg_back, (back_x1, bg_back_y))
         world_surface.blit(bg_back, (back_x2, bg_back_y))
 
@@ -932,19 +861,12 @@ while True:
         
        
 
-    # ---- OBSTACLES ----
+    # OBSTACLES 
         for obs in obstacles:
             if isinstance(obs, SmallSpike):
                 pygame.draw.rect(screen, (255, 0, 0), obs.rect, 1)
 
             obs.draw(world_surface)
-            
-
-    # ---- PLAYER ----
-     
-           
-
-       
         # player.draw_skid(world_surface)
         player.draw(world_surface)
 
@@ -952,11 +874,8 @@ while True:
         
         if state == "win":
             draw_win_screen(screen, font)
-
-
-    # -------------------------
+            
     # APPLY ZOOM (WORLD ONLY)
-    # -------------------------
         scaled_world = pygame.transform.smoothscale(
         world_surface,
         (int(WIDTH * zoom), int(HEIGHT * zoom))
@@ -964,17 +883,12 @@ while True:
 
         world_rect = scaled_world.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         screen.blit(scaled_world, world_rect)
-
-    # -------------------------
-    # UI (NO ZOOM)
-    # -------------------------
         
+    # UI (NO ZOOM)
+    
     if state == "retry":
         retry_btn, menu_btn = draw_retry_panel(screen)
  
-
-
-
     elif state == "settings":
         screen.fill((20, 20, 20))
 
@@ -1007,3 +921,4 @@ while True:
     clock.tick(60)
 
     
+
